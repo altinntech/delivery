@@ -31,9 +31,9 @@ public final class StoragePlace extends BaseEntity<UUID> {
         return Result.success(new StoragePlace(name,totalVolume));
     }
 
-    private boolean isAvailableForOrder (int orderVolume) {
+    public boolean isAvailableForOrder (int orderVolume) {
 
-        return (OrderId == null) && (orderVolume <= TotalVolume);
+        return (OrderId == null) && (orderVolume <= TotalVolume) && (orderVolume > 0);
 
     }
 

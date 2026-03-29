@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor(force = true, access = AccessLevel.PROTECTED)
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Location extends ValueObject<Location> {
 
