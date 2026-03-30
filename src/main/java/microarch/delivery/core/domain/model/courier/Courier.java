@@ -3,6 +3,7 @@ package microarch.delivery.core.domain.model.courier;
 import libs.ddd.Aggregate;
 import libs.errs.*;
 import libs.errs.Error;
+import lombok.Getter;
 import microarch.delivery.core.domain.model.general.Location;
 import microarch.delivery.core.domain.model.general.StoragePlace;
 
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
 public class Courier extends Aggregate<UUID> {
 
     private final String name;
@@ -69,7 +71,7 @@ public class Courier extends Aggregate<UUID> {
         if ((e = Guard.againstNullOrEmpty(orderId,"orderId"))!=null) return UnitResult.failure(e);
 
         for (StoragePlace place : storagePlaces) {
-            if (place.getOrderId().equals(orderId)) {
+            if (!place.isEmpty() && place.getOrderId().equals(orderId)) {
                 return place.extractOrder();
             }
         }

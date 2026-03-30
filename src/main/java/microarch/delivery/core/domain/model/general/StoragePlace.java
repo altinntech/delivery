@@ -67,4 +67,8 @@ public final class StoragePlace extends BaseEntity<UUID> {
 
     }
 
+    public boolean isEmpty () {
+        return OrderId == null;
+    }
+
 }
