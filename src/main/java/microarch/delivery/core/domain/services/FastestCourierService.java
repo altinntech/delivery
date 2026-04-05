@@ -34,7 +34,8 @@ public class FastestCourierService implements OrderDispatchingService{
         }
 
         if (freeCourier != null) {
-            freeCourier.takeNewOrder(order.getId(),order.getVolume());
+            var result = freeCourier.takeNewOrder(order.getId(),order.getVolume());
+            if (result.isFailure()) return Result.failure(result.getError());
             order.assignCourier(freeCourier.getId());
             return Result.success(freeCourier);
         }
