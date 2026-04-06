@@ -22,7 +22,7 @@ public class CourierTest {
 
         Location location = Location.create(5, 5).getValue();
 
-        var  courier = Courier.create("Bob",5,location);
+        var courier = Courier.create("Bob", 5, location);
 
         assertThat(courier.isSuccess()).isTrue();
         assertThat(courier.getValue().getCurrentLocation()).isEqualTo(location);
@@ -35,21 +35,17 @@ public class CourierTest {
 
     @ParameterizedTest
     @DisplayName("Should not create courier with invalid params ")
-    @CsvSource({"Bob,5,-1,10",
-            "Bob,0,5,5",
-            ",5,5,5",
-            ",5,5,0",
-            ",0,0,-5"
-    })
-    public void shouldNotCreateOrderWithInvalidParams(String name,int speed, int x,int y) {
+    @CsvSource({ "Bob,5,-1,10", "Bob,0,5,5", ",5,5,5", ",5,5,0", ",0,0,-5" })
+    public void shouldNotCreateOrderWithInvalidParams(String name, int speed, int x, int y) {
 
         Location targetLocation = null;
 
-        var location =  Location.create(x,y);
+        var location = Location.create(x, y);
 
-        if (location.isSuccess()) targetLocation = location.getValue();
+        if (location.isSuccess())
+            targetLocation = location.getValue();
 
-        var  courier = Courier.create(name,speed,targetLocation);
+        var courier = Courier.create(name, speed, targetLocation);
 
         assertThat(courier.isSuccess()).isFalse();
 
@@ -57,11 +53,11 @@ public class CourierTest {
 
     @Test
     @DisplayName("Should add new storage place")
-    public void shouldAddOneMoreStoragePlace () {
+    public void shouldAddOneMoreStoragePlace() {
 
-        Courier courier = Courier.create("Bob",5,Location.create(3,7).getValue()).getValue();
-        courier.addStoragePlace("Front",5);
-        courier.addStoragePlace("Back",15);
+        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
+        courier.addStoragePlace("Front", 5);
+        courier.addStoragePlace("Back", 15);
 
         assertThat(courier).isNotNull();
         assertThat(courier.getStoragePlaces().size()).isEqualTo(3);
@@ -71,9 +67,9 @@ public class CourierTest {
 
     @Test
     @DisplayName("Check if courier could take new order")
-    public void isCanTakeNewOrder () {
+    public void isCanTakeNewOrder() {
 
-        Courier courier = Courier.create("Bob",5,Location.create(3,7).getValue()).getValue();
+        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
 
         boolean canTakeNewOrder = courier.isAvailableForNewOrder(5) != null;
 
@@ -84,13 +80,13 @@ public class CourierTest {
 
     @Test
     @DisplayName("Could not take the new order")
-    public void couldNotTakeTheNewOrder () {
+    public void couldNotTakeTheNewOrder() {
 
-        Courier courier = Courier.create("Bob",5,Location.create(3,7).getValue()).getValue();
-        courier.addStoragePlace("Front",5);
-        courier.addStoragePlace("Back",15);
+        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
+        courier.addStoragePlace("Front", 5);
+        courier.addStoragePlace("Back", 15);
 
-        courier.takeNewOrder(UUID.randomUUID(),5);
+        courier.takeNewOrder(UUID.randomUUID(), 5);
 
         StoragePlace place = courier.isAvailableForNewOrder(20);
 
@@ -103,12 +99,12 @@ public class CourierTest {
 
     @Test
     @DisplayName("Take new order")
-    public void shouldTakeTheNewOrder () {
+    public void shouldTakeTheNewOrder() {
 
-        Courier courier = Courier.create("Bob",5,Location.create(3,7).getValue()).getValue();
+        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
 
         UUID orderId = UUID.randomUUID();
-        UnitResult <Error> e = courier.takeNewOrder(orderId,5);
+        UnitResult<Error> e = courier.takeNewOrder(orderId, 5);
 
         StoragePlace place = courier.getStoragePlaces().getFirst();
 
@@ -116,21 +112,20 @@ public class CourierTest {
         assertThat(place.getOrderId()).isEqualTo(orderId);
         assertThat(e.isSuccess()).isTrue();
 
-
     }
 
     @Test
     @DisplayName("Should finish order")
-    public void shouldFinishOrder () {
+    public void shouldFinishOrder() {
 
-        Courier courier = Courier.create("Bob",5,Location.create(3,7).getValue()).getValue();
+        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
 
         UUID orderId = UUID.randomUUID();
-        
-        UnitResult <Error> te = courier.takeNewOrder(orderId,5);
 
-        UnitResult <Error> re = courier.finishOrder(orderId);
-        
+        UnitResult<Error> te = courier.takeNewOrder(orderId, 5);
+
+        UnitResult<Error> re = courier.finishOrder(orderId);
+
         assertThat(courier).isNotNull();
         assertThat(te.isSuccess()).isTrue();
         assertThat(re.isSuccess()).isTrue();
@@ -140,13 +135,13 @@ public class CourierTest {
 
     @Test
     @DisplayName("Should not finish order")
-    public void shouldNotFinishOrder () {
+    public void shouldNotFinishOrder() {
 
-        Courier courier = Courier.create("Bob",5,Location.create(3,7).getValue()).getValue();
+        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
 
         UUID orderId = UUID.randomUUID();
 
-        UnitResult <Error> re = courier.finishOrder(orderId);
+        UnitResult<Error> re = courier.finishOrder(orderId);
 
         assertThat(courier).isNotNull();
         assertThat(re.isSuccess()).isFalse();

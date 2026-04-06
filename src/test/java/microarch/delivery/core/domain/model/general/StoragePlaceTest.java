@@ -17,7 +17,7 @@ public class StoragePlaceTest {
     @DisplayName("Should create storage place with valid params")
     public void shouldCreateStoragePlaceWithValidParams() {
 
-        var  storagePlace = StoragePlace.create("Bag",10);
+        var storagePlace = StoragePlace.create("Bag", 10);
 
         assertThat(storagePlace.isSuccess()).isTrue();
         assertThat(storagePlace.getValue().getName()).isEqualTo("Bag");
@@ -26,10 +26,10 @@ public class StoragePlaceTest {
 
     @ParameterizedTest
     @DisplayName("Should not create storage place with invalid params ")
-    @CsvSource({"Bag,0","Bag,-1",",5","'   ',5",",0",",-10","'  ',0","'   ',-2"})
-    public void shouldNotCreateStoragePlaceWithInvalidParams(String name,int volume) {
+    @CsvSource({ "Bag,0", "Bag,-1", ",5", "'   ',5", ",0", ",-10", "'  ',0", "'   ',-2" })
+    public void shouldNotCreateStoragePlaceWithInvalidParams(String name, int volume) {
 
-        var  storagePlace = StoragePlace.create(name,volume);
+        var storagePlace = StoragePlace.create(name, volume);
 
         assertThat(storagePlace.isSuccess()).isFalse();
         assertThat(storagePlace.isFailure()).isTrue();
@@ -40,8 +40,8 @@ public class StoragePlaceTest {
     @DisplayName("Place valid order in storage")
     public void placeValidOrder() {
 
-        StoragePlace storagePlace = StoragePlace.create("Bag",10).getValue();
-        UnitResult<Error> result = storagePlace.placeNewOrder(UUID.randomUUID(),7);
+        StoragePlace storagePlace = StoragePlace.create("Bag", 10).getValue();
+        UnitResult<Error> result = storagePlace.placeNewOrder(UUID.randomUUID(), 7);
 
         assertThat(result.isSuccess()).isTrue();
         assertThat(storagePlace.getOrderId()).isNotNull();
@@ -50,11 +50,11 @@ public class StoragePlaceTest {
 
     @ParameterizedTest
     @DisplayName("Should not place order in small storage")
-    @CsvSource({"10,20","1,5","5,0"})
+    @CsvSource({ "10,20", "1,5", "5,0" })
     public void shouldNotPlaceOrderInSmallStorage(int storageSize, int orderSize) {
 
-        StoragePlace storagePlace = StoragePlace.create("Bag",storageSize).getValue();
-        UnitResult<Error> result = storagePlace.placeNewOrder(UUID.randomUUID(),orderSize);
+        StoragePlace storagePlace = StoragePlace.create("Bag", storageSize).getValue();
+        UnitResult<Error> result = storagePlace.placeNewOrder(UUID.randomUUID(), orderSize);
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(storagePlace.getOrderId()).isNull();
@@ -65,11 +65,11 @@ public class StoragePlaceTest {
     @DisplayName("Should not place order in non empty storage")
     public void shouldNotPlaceOrderInNonEmptyStorage() {
 
-        StoragePlace storagePlace = StoragePlace.create("Bag",10).getValue();
+        StoragePlace storagePlace = StoragePlace.create("Bag", 10).getValue();
         UUID orderID = UUID.randomUUID();
-        storagePlace.placeNewOrder(orderID,5);
+        storagePlace.placeNewOrder(orderID, 5);
 
-        UnitResult<Error> result = storagePlace.placeNewOrder(UUID.randomUUID(),3);
+        UnitResult<Error> result = storagePlace.placeNewOrder(UUID.randomUUID(), 3);
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(storagePlace.getOrderId()).isEqualTo(orderID);
@@ -80,8 +80,8 @@ public class StoragePlaceTest {
     @DisplayName("Should extract order from storage")
     public void shouldExtractOrderFromStorage() {
 
-        StoragePlace storagePlace = StoragePlace.create("Bag",10).getValue();
-        storagePlace.placeNewOrder(UUID.randomUUID(),5);
+        StoragePlace storagePlace = StoragePlace.create("Bag", 10).getValue();
+        storagePlace.placeNewOrder(UUID.randomUUID(), 5);
         UnitResult<Error> result = storagePlace.extractOrder();
 
         assertThat(result.isSuccess()).isTrue();
@@ -93,12 +93,11 @@ public class StoragePlaceTest {
     @DisplayName("Should not extract order from empty storage")
     public void shouldNotExtractOrderFromEmptyStorage() {
 
-        StoragePlace storagePlace = StoragePlace.create("Bag",10).getValue();
+        StoragePlace storagePlace = StoragePlace.create("Bag", 10).getValue();
         UnitResult<Error> result = storagePlace.extractOrder();
 
         assertThat(result.isSuccess()).isFalse();
 
     }
-
 
 }

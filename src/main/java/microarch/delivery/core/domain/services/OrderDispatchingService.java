@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface OrderDispatchingService {
 
-    Result<Courier, Error> dispatchOrder (Order order, List<Courier> couriers);
+    Result<Courier, Error> dispatchOrder(Order order, List<Courier> couriers);
 
 }

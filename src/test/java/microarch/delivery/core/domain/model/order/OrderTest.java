@@ -20,7 +20,7 @@ public class OrderTest {
 
         UUID basketId = UUID.randomUUID();
         Location location = Location.create(5, 5).getValue();
-        var  order = Order.create(basketId,location,5);
+        var order = Order.create(basketId, location, 5);
 
         assertThat(order.isSuccess()).isTrue();
         assertThat(order.getValue().getTargetLocation()).isEqualTo(location);
@@ -32,27 +32,23 @@ public class OrderTest {
 
     @ParameterizedTest
     @DisplayName("Should not create order with invalid params ")
-    @CsvSource({"550e8400-e29b-41d4-a716-446655440000,5,-1,10",
-            ",5,5,5",
-            ",0,0,5",
-            "550e8400-e29b-41d4-a716-446655440000,0,0,5",
-            "550e8400-e29b-41d4-a716-446655440000,5,5,0",
-            ",5,5,0",
-            ",0,0,-5"
-            })
-    public void shouldNotCreateOrderWithInvalidParams(String uuid, int x,int y,int volume) {
-
+    @CsvSource({ "550e8400-e29b-41d4-a716-446655440000,5,-1,10", ",5,5,5", ",0,0,5",
+            "550e8400-e29b-41d4-a716-446655440000,0,0,5", "550e8400-e29b-41d4-a716-446655440000,5,5,0", ",5,5,0",
+            ",0,0,-5" })
+    public void shouldNotCreateOrderWithInvalidParams(String uuid, int x, int y, int volume) {
 
         Location targetLocation = null;
         UUID basketId = null;
 
-        if (uuid != null) basketId = UUID.fromString(uuid);
+        if (uuid != null)
+            basketId = UUID.fromString(uuid);
 
-        var location =  Location.create(x,y);
+        var location = Location.create(x, y);
 
-        if (location.isSuccess()) targetLocation = location.getValue();
+        if (location.isSuccess())
+            targetLocation = location.getValue();
 
-        var  order = Order.create(basketId,targetLocation,volume);
+        var order = Order.create(basketId, targetLocation, volume);
 
         assertThat(order.isSuccess()).isFalse();
 
@@ -65,7 +61,7 @@ public class OrderTest {
         UUID basketId = UUID.randomUUID();
         UUID courierId = UUID.randomUUID();
         Location location = Location.create(5, 5).getValue();
-        var  order = Order.create(basketId,location,5);
+        var order = Order.create(basketId, location, 5);
 
         order.getValue().assignCourier(courierId);
 
@@ -85,7 +81,7 @@ public class OrderTest {
         UUID basketId = UUID.randomUUID();
         UUID courierId = UUID.randomUUID();
         Location location = Location.create(5, 5).getValue();
-        var  order = Order.create(basketId,location,5);
+        var order = Order.create(basketId, location, 5);
 
         order.getValue().assignCourier(courierId);
 
@@ -106,7 +102,7 @@ public class OrderTest {
 
         UUID basketId = UUID.randomUUID();
         Location location = Location.create(5, 5).getValue();
-        var  order = Order.create(basketId,location,5);
+        var order = Order.create(basketId, location, 5);
 
         var result = order.getValue().finishOrder();
 

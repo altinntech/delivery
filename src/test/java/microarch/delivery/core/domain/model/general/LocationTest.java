@@ -16,7 +16,7 @@ public class LocationTest {
     @DisplayName("Should create location with valid coordinates")
     public void shouldCreateLocationWithValidCoordinates() {
 
-        var  location = Location.create(5, 5);
+        var location = Location.create(5, 5);
 
         assertThat(location.isSuccess()).isTrue();
         assertThat(location.getValue().getX()).isEqualTo(5);
@@ -25,10 +25,10 @@ public class LocationTest {
 
     @ParameterizedTest
     @DisplayName("Should not create invalid object: less 1 or bigger than 10")
-    @CsvSource ({"0,5","11,5","4,0","4,11","0,11"})
-    public void shouldNotCreateInvalidObject (int x, int y) {
+    @CsvSource({ "0,5", "11,5", "4,0", "4,11", "0,11" })
+    public void shouldNotCreateInvalidObject(int x, int y) {
 
-        var location =  Location.create(x,y);
+        var location = Location.create(x, y);
 
         assertThat(location.isFailure()).isTrue();
 
@@ -81,7 +81,7 @@ public class LocationTest {
     public void shouldCalculateDistance() {
         Location location1 = Location.create(2, 6).getValue();
         Location location2 = Location.create(4, 9).getValue();
-        assertEquals(2+3, location1.distanceTo(location2));
+        assertEquals(2 + 3, location1.distanceTo(location2));
     }
 
 }

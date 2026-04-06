@@ -12,11 +12,9 @@ import java.util.Arrays;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum OrderStatus {
 
-    CREATED     (1),
-    ASSIGNED    (2),
-    COMPLETED   (3);
+    CREATED(1), ASSIGNED(2), COMPLETED(3);
 
-    private final int id;
+    private final int code;
 
     public static Result<OrderStatus, Error> getByName(String name) {
         for (OrderStatus orderStatus : values()) {
@@ -27,9 +25,9 @@ public enum OrderStatus {
         return Result.failure(Errors.orderStatusIsWrong());
     }
 
-    public static Result<OrderStatus, Error> getById(int id) {
+    public static Result<OrderStatus, Error> getByCode(int code) {
         for (OrderStatus orderStatus : values()) {
-            if (orderStatus.id == id) {
+            if (orderStatus.code == code) {
                 return Result.success(orderStatus);
             }
         }

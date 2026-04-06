@@ -14,12 +14,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderDispatchingServiceTest {
 
     @Test
-    public void shouldDispatchOrder () {
+    public void shouldDispatchOrder() {
 
-        Order newOrder = Order.create(UUID.randomUUID(), Location.create(10,10).getValue(),5).getValue();
-        Courier courier1 = Courier.create("Bob",2,Location.create(1,1).getValue()).getValue();
-        Courier courier2 = Courier.create("Tom",1,Location.create(1,1).getValue()).getValue();
-        Courier courier3 = Courier.create("Bill",3,Location.create(1,1).getValue()).getValue();
+        Order newOrder = Order.create(UUID.randomUUID(), Location.create(10, 10).getValue(), 5).getValue();
+        Courier courier1 = Courier.create("Bob", 2, Location.create(1, 1).getValue()).getValue();
+        Courier courier2 = Courier.create("Tom", 1, Location.create(1, 1).getValue()).getValue();
+        Courier courier3 = Courier.create("Bill", 3, Location.create(1, 1).getValue()).getValue();
 
         ArrayList<Courier> allCouriers = new ArrayList<>();
         allCouriers.add(courier1);
@@ -28,7 +28,7 @@ public class OrderDispatchingServiceTest {
 
         OrderDispatchingService orderDispatchingService = new FastestCourierService();
 
-        Courier winner = orderDispatchingService.dispatchOrder(newOrder,allCouriers).getValue();
+        Courier winner = orderDispatchingService.dispatchOrder(newOrder, allCouriers).getValue();
 
         assertThat(winner).isEqualTo(courier3);
         assertThat(newOrder.getCourierId()).isEqualTo(winner.getId());
@@ -36,12 +36,12 @@ public class OrderDispatchingServiceTest {
     }
 
     @Test
-    public void shouldNotDispatchOrderSizeTooBig () {
+    public void shouldNotDispatchOrderSizeTooBig() {
 
-        Order newOrder = Order.create(UUID.randomUUID(), Location.create(10,10).getValue(),15).getValue();
-        Courier courier1 = Courier.create("Bob",2,Location.create(1,1).getValue()).getValue();
-        Courier courier2 = Courier.create("Tom",1,Location.create(1,1).getValue()).getValue();
-        Courier courier3 = Courier.create("Bill",3,Location.create(1,1).getValue()).getValue();
+        Order newOrder = Order.create(UUID.randomUUID(), Location.create(10, 10).getValue(), 15).getValue();
+        Courier courier1 = Courier.create("Bob", 2, Location.create(1, 1).getValue()).getValue();
+        Courier courier2 = Courier.create("Tom", 1, Location.create(1, 1).getValue()).getValue();
+        Courier courier3 = Courier.create("Bill", 3, Location.create(1, 1).getValue()).getValue();
 
         ArrayList<Courier> allCouriers = new ArrayList<>();
         allCouriers.add(courier1);
@@ -50,24 +50,24 @@ public class OrderDispatchingServiceTest {
 
         OrderDispatchingService orderDispatchingService = new FastestCourierService();
 
-        var winner = orderDispatchingService.dispatchOrder(newOrder,allCouriers);
+        var winner = orderDispatchingService.dispatchOrder(newOrder, allCouriers);
 
         assertThat(winner.isSuccess()).isFalse();
 
     }
 
     @Test
-    public void shouldNotDispatchOrderNoFreeCouriers () {
+    public void shouldNotDispatchOrderNoFreeCouriers() {
 
-        Order firstOrder = Order.create(UUID.randomUUID(), Location.create(5,5).getValue(),5).getValue();
-        Order newOrder = Order.create(UUID.randomUUID(), Location.create(10,10).getValue(),5).getValue();
-        Courier courier1 = Courier.create("Bob",2,Location.create(1,1).getValue()).getValue();
-        Courier courier2 = Courier.create("Tom",1,Location.create(1,1).getValue()).getValue();
-        Courier courier3 = Courier.create("Bill",3,Location.create(1,1).getValue()).getValue();
+        Order firstOrder = Order.create(UUID.randomUUID(), Location.create(5, 5).getValue(), 5).getValue();
+        Order newOrder = Order.create(UUID.randomUUID(), Location.create(10, 10).getValue(), 5).getValue();
+        Courier courier1 = Courier.create("Bob", 2, Location.create(1, 1).getValue()).getValue();
+        Courier courier2 = Courier.create("Tom", 1, Location.create(1, 1).getValue()).getValue();
+        Courier courier3 = Courier.create("Bill", 3, Location.create(1, 1).getValue()).getValue();
 
-        courier1.takeNewOrder(firstOrder.getId(),firstOrder.getVolume());
-        courier2.takeNewOrder(firstOrder.getId(),firstOrder.getVolume());
-        courier3.takeNewOrder(firstOrder.getId(),firstOrder.getVolume());
+        courier1.takeNewOrder(firstOrder.getId(), firstOrder.getVolume());
+        courier2.takeNewOrder(firstOrder.getId(), firstOrder.getVolume());
+        courier3.takeNewOrder(firstOrder.getId(), firstOrder.getVolume());
 
         ArrayList<Courier> allCouriers = new ArrayList<>();
         allCouriers.add(courier1);
@@ -76,7 +76,7 @@ public class OrderDispatchingServiceTest {
 
         OrderDispatchingService orderDispatchingService = new FastestCourierService();
 
-        var winner = orderDispatchingService.dispatchOrder(newOrder,allCouriers);
+        var winner = orderDispatchingService.dispatchOrder(newOrder, allCouriers);
 
         assertThat(winner.isSuccess()).isFalse();
 

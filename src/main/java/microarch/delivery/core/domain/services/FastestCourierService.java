@@ -10,20 +10,20 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class FastestCourierService implements OrderDispatchingService{
+public class FastestCourierService implements OrderDispatchingService {
 
     @Override
     public Result<Courier, Error> dispatchOrder(Order order, List<Courier> allCouriers) {
 
-        HashMap<Courier,Double> courierRating = new HashMap<>();
+        HashMap<Courier, Double> courierRating = new HashMap<>();
 
-        if ((order == null)||(order.getStatus()!=OrderStatus.CREATED) ||
-            (allCouriers==null)||(allCouriers.isEmpty()))
-                return Result.failure(Errors.dispatchingInputValidationFailed());
+        if ((order == null) || (order.getStatus() != OrderStatus.CREATED) || (allCouriers == null)
+                || (allCouriers.isEmpty()))
+            return Result.failure(Errors.dispatchingInputValidationFailed());
 
         for (Courier courier : allCouriers) {
-            if (courier.isAvailableForNewOrder(order.getVolume())!=null) {
-                courierRating.put(courier,courier.countStepsToLocation(order.getTargetLocation()));
+            if (courier.isAvailableForNewOrder(order.getVolume()) != null) {
+                courierRating.put(courier, courier.countStepsToLocation(order.getTargetLocation()));
             }
         }
 
@@ -34,8 +34,9 @@ public class FastestCourierService implements OrderDispatchingService{
         }
 
         if (freeCourier != null) {
-            var result = freeCourier.takeNewOrder(order.getId(),order.getVolume());
-            if (result.isFailure()) return Result.failure(result.getError());
+            var result = freeCourier.takeNewOrder(order.getId(), order.getVolume());
+            if (result.isFailure())
+                return Result.failure(result.getError());
             order.assignCourier(freeCourier.getId());
             return Result.success(freeCourier);
         }
@@ -44,13 +45,13 @@ public class FastestCourierService implements OrderDispatchingService{
 
     }
 
-
     public static class Errors {
         public static Error dispatchingInputValidationFailed() {
             return Error.of("order.dispatching.service.validation.failed",
                     "Ошибка валидации входящих параметров сервиса диспатчеризации ");
 
         }
+
         public static Error noAvailableCouriers() {
             return Error.of("order.dispatching.service.no.available.couriers",
                     "В данный момент нет свободных курьеров для доставки");

@@ -19,12 +19,14 @@ public final class Location extends ValueObject<Location> {
     private int x;
     private int y;
 
-    public static Result<Location, Error> create (int x,int y) {
+    public static Result<Location, Error> create(int x, int y) {
 
-        if (x < 1 || x > 10) return Result.failure(GeneralErrors.valueIsOutOfRange("X", x,1,10));
-        if (y < 1 || y > 10) return Result.failure(GeneralErrors.valueIsOutOfRange("Y", y,1,10));
+        if (x < 1 || x > 10)
+            return Result.failure(GeneralErrors.valueIsOutOfRange("X", x, 1, 10));
+        if (y < 1 || y > 10)
+            return Result.failure(GeneralErrors.valueIsOutOfRange("Y", y, 1, 10));
 
-        var location = new Location(x,y);
+        var location = new Location(x, y);
         return Result.success(location);
 
     }

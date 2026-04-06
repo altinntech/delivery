@@ -6,6 +6,7 @@ import libs.errs.Error;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import microarch.basket.adapters.in.http.model.Basket;
 import microarch.delivery.core.domain.model.general.Location;
 
 import java.util.UUID;
@@ -26,19 +27,44 @@ public final class Order extends Aggregate<UUID> {
         this.status = OrderStatus.CREATED;
     }
 
-    public static Result<Order,Error> create (UUID basketId, Location location, int volume) {
+    public static Result<Order, Error> create(UUID basketId, Location location, int volume) {
 
         Error e = null;
-        if ((e = Guard.againstNullOrEmpty(basketId,"orderId"))!=null) return Result.failure(e);
-        if (location == null) return Result.failure(GeneralErrors.valueIsRequired("location"));
-        if (volume <= 0) return Result.failure(GeneralErrors.valueMustBeGreaterOrEqual("orderVolume",volume,0));
+        if ((e = Guard.againstNullOrEmpty(basketId, "orderId")) != null)
+            return Result.failure(e);
+        if (location == null)
+            return Result.failure(GeneralErrors.valueIsRequired("location"));
+        if (volume <= 0)
+            return Result.failure(GeneralErrors.valueMustBeGreaterOrEqual("orderVolume", volume, 0));
 
-        return Result.success(new Order(basketId,location,volume));
+        return Result.success(new Order(basketId, location, volume));
     }
 
-    public UnitResult<Error> assignCourier (UUID courierId) {
+    public static Result<Order, Error> createFromDB(UUID orderId, int x, int y, int volume, int statusCode,
+            UUID courierId) {
+
+        var locationResult = Location.create(x, y);
+        if (locationResult.isFailure())
+            return Result.failure(locationResult.getError());
+
+        var statusResult = OrderStatus.getByCode(statusCode);
+        if (statusResult.isFailure())
+            return Result.failure(statusResult.getError());
+
+        var orderResult = create(orderId, locationResult.getValue(), volume);
+        if (orderResult.isFailure())
+            return orderResult;
+
+        Order order = orderResult.getValue();
+        order.status = statusResult.getValue();
+        order.courierId = courierId;
+
+        return Result.success(order);
+    }
+
+    public UnitResult<Error> assignCourier(UUID courierId) {
         Error e = null;
-        if ( (e = Guard.againstNullOrEmpty(courierId,"courierId")) != null)
+        if ((e = Guard.againstNullOrEmpty(courierId, "courierId")) != null)
             return UnitResult.failure(GeneralErrors.valueIsRequired("courierId"));
 
         this.courierId = courierId;
@@ -47,8 +73,8 @@ public final class Order extends Aggregate<UUID> {
         return UnitResult.success();
     }
 
-    public UnitResult<Error> finishOrder () {
-        if ((status == null)||(status!=OrderStatus.ASSIGNED))
+    public UnitResult<Error> finishOrder() {
+        if ((status == null) || (status != OrderStatus.ASSIGNED))
             return UnitResult.failure(Errors.orderNotInAssignedState());
 
         this.status = OrderStatus.COMPLETED;
@@ -58,8 +84,7 @@ public final class Order extends Aggregate<UUID> {
 
     public static class Errors {
         public static Error orderNotInAssignedState() {
-            return Error.of("order.not.in.assigned.state",
-                    "Can't finish order. Order state not ASSIGNED");
+            return Error.of("order.not.in.assigned.state", "Can't finish order. Order state not ASSIGNED");
         }
     }
 
