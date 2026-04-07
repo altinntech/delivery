@@ -33,6 +33,22 @@ public final class StoragePlace extends BaseEntity<UUID> {
         return Result.success(new StoragePlace(name, totalVolume));
     }
 
+    public static Result<StoragePlace, Error> createFromDB(UUID id, String name, int totalVolume, UUID orderId) {
+
+        Error e = null;
+        if ((e = Guard.againstNullOrEmpty(id,"StorageplaceID"))!=null) return Result.failure(e);
+        if ((e = Guard.againstLessOrEqual(totalVolume, 0, "TotalVolume")) != null)
+            return Result.failure(e);
+        if ((e = Guard.againstNullOrEmpty(name, "Name")) != null)
+            return Result.failure(e);
+
+        StoragePlace storagePlace = new StoragePlace(name,totalVolume);
+        storagePlace.id = id;
+        storagePlace.OrderId = orderId;
+
+        return Result.success(storagePlace);
+    }
+
     public boolean isAvailableForOrder(int orderVolume) {
 
         return (OrderId == null) && (orderVolume <= TotalVolume) && (orderVolume > 0);

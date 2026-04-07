@@ -8,6 +8,7 @@ import microarch.delivery.core.domain.model.general.Location;
 import microarch.delivery.core.domain.model.general.StoragePlace;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,15 +18,14 @@ public class Courier extends Aggregate<UUID> {
     private final String name;
     private final int speed;
     private Location currentLocation;
-    private final ArrayList<StoragePlace> storagePlaces;
+    private final List<StoragePlace> storagePlaces;
 
-    private Courier(String name, int speed, Location currentLocation) {
+    private Courier(String name, int speed, Location currentLocation, List<StoragePlace> storagePlaces) {
         super(UUID.randomUUID());
         this.name = name;
         this.speed = speed;
         this.currentLocation = currentLocation;
-        this.storagePlaces = new ArrayList<>();
-        storagePlaces.add(StoragePlace.create("Bag", 10).getValue());
+        this.storagePlaces = storagePlaces;
     }
 
     public static Result<Courier, Error> create(String name, int speed, Location location) {
@@ -38,7 +38,32 @@ public class Courier extends Aggregate<UUID> {
         if (location == null)
             return Result.failure(GeneralErrors.valueIsRequired("location"));
 
-        return Result.success(new Courier(name, speed, location));
+        ArrayList<StoragePlace> storagePlaces = new ArrayList<>();
+        storagePlaces.add(StoragePlace.create("Bag", 10).getValue());
+
+        return Result.success(new Courier(name, speed, location,storagePlaces));
+    }
+
+    public static Result<Courier, Error> createFromDB(UUID id, String name, int speed, int x, int y, List<StoragePlace> places) {
+
+        Error e = null;
+        if ((e = Guard.againstNullOrEmpty(id, "courierId")) != null)
+            return Result.failure(e);
+
+        if ((e = Guard.againstNullOrEmpty(name, "name")) != null)
+            return Result.failure(e);
+
+        if (speed < 1)
+            return Result.failure(GeneralErrors.valueMustBeGreaterOrEqual("speed", speed, 1));
+
+        var locationResult = Location.create(x, y);
+        if (locationResult.isFailure())
+            return Result.failure(locationResult.getError());
+
+        Courier courier = new Courier(name,speed,locationResult.getValue(),places);
+        courier.id = id;
+
+        return Result.success(courier);
     }
 
     public UnitResult<Error> addStoragePlace(String name, int volume) {

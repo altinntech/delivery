@@ -1,4 +1,4 @@
-CREATE TABLE Orders
+CREATE TABLE orders
 (
     id UUID PRIMARY KEY,
     location_x  INTEGER,
