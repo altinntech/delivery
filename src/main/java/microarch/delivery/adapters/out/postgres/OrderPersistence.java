@@ -1,6 +1,7 @@
 package microarch.delivery.adapters.out.postgres;
 
 import microarch.delivery.core.domain.model.order.Order;
+import microarch.delivery.core.domain.model.order.OrderStatus;
 import microarch.delivery.core.ports.OrderRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -29,7 +30,7 @@ public class OrderPersistence implements OrderRepository {
 
     @Override
     public boolean updateOrder(Order o) {
-        String sql = "UPDATE Orders SET location_x = ?,location_y = ?,volume = ?,status_code = ?,courierId = ?) WHERE id = ?";
+        String sql = "UPDATE Orders SET location_x = ?,location_y = ?,volume = ?,status_code = ?,courierId = ? WHERE id = ?";
         // Returns the number of rows affected (usually 1)
         int countRows = jdbcTemplate.update(sql, o.getTargetLocation().getX(), o.getTargetLocation().getY(),
                 o.getVolume(), o.getStatus().getCode(), o.getCourierId(), o.getId());
@@ -48,16 +49,34 @@ public class OrderPersistence implements OrderRepository {
 
         }, orderId);
 
-        return Optional.empty();
+        return order == null ?  Optional.empty() : Optional.of(order);
     }
 
     @Override
     public Optional<Order> findAnyOneCreated() {
-        return Optional.empty();
+
+        List<Order> orders = jdbcTemplate.query("SELECT * FROM Orders WHERE status_code = ?", (rs, rowNum) -> {
+            var orderResult = Order.createFromDB(rs.getObject("id", UUID.class), rs.getInt("location_x"),
+                    rs.getInt("location_y"), rs.getInt("volume"), rs.getInt("status_code"),
+                    rs.getObject("courierId", UUID.class));
+
+            return orderResult.getValue();
+
+        }, OrderStatus.CREATED.getCode());
+
+        return orders.isEmpty() ? Optional.empty(): Optional.of(orders.getFirst());
     }
 
     @Override
     public List<Order> findAllAssigned() {
-        return List.of();
+
+        return jdbcTemplate.query("SELECT * FROM Orders WHERE status_code = ?", (rs, rowNum) -> {
+            var orderResult = Order.createFromDB(rs.getObject("id", UUID.class), rs.getInt("location_x"),
+                    rs.getInt("location_y"), rs.getInt("volume"), rs.getInt("status_code"),
+                    rs.getObject("courierId", UUID.class));
+
+            return orderResult.getValue();
+
+        }, OrderStatus.ASSIGNED.getCode());
     }
 }
