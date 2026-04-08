@@ -7,10 +7,10 @@ CREATE TABLE couriers (
 );
 
 CREATE TABLE couriers_storageplaces (
-    id UUID PRIMARY KEY ,
-    courier_id UUID NOT NULL ,
+    id UUID PRIMARY KEY,
+    courier_id UUID NOT NULL,
     name VARCHAR (255),
     volume INTEGER,
     order_id UUID,
     FOREIGN KEY (courier_id) REFERENCES couriers(id)
-)
+);

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("Тестирование репозитория с миграциями")
+@DisplayName("Тестирование репозитория заказов с миграциями")
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class OrderRepositoryTest extends PostgresIntegrationTestBase {

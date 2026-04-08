@@ -53,6 +53,8 @@ public class Courier extends Aggregate<UUID> {
         if ((e = Guard.againstNullOrEmpty(name, "name")) != null)
             return Result.failure(e);
 
+        if (places == null) return Result.failure(GeneralErrors.valueIsRequired("storage places"));
+
         if (speed < 1)
             return Result.failure(GeneralErrors.valueMustBeGreaterOrEqual("speed", speed, 1));
 
