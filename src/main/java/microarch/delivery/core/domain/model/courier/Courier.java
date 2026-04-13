@@ -5,6 +5,7 @@ import libs.errs.*;
 import libs.errs.Error;
 import lombok.Getter;
 import microarch.delivery.core.domain.model.general.Location;
+import microarch.delivery.core.domain.model.general.Speed;
 import microarch.delivery.core.domain.model.general.StoragePlace;
 
 import java.util.ArrayList;
@@ -16,11 +17,11 @@ import java.util.UUID;
 public class Courier extends Aggregate<UUID> {
 
     private final String name;
-    private final int speed;
+    private final Speed speed;
     private Location currentLocation;
     private final List<StoragePlace> storagePlaces;
 
-    private Courier(String name, int speed, Location currentLocation, List<StoragePlace> storagePlaces) {
+    private Courier(String name, Speed speed, Location currentLocation, List<StoragePlace> storagePlaces) {
         super(UUID.randomUUID());
         this.name = name;
         this.speed = speed;
@@ -28,13 +29,13 @@ public class Courier extends Aggregate<UUID> {
         this.storagePlaces = storagePlaces;
     }
 
-    public static Result<Courier, Error> create(String name, int speed, Location location) {
+    public static Result<Courier, Error> create(String name, Speed speed, Location location) {
 
         Error e = null;
         if ((e = Guard.againstNullOrEmpty(name, "name")) != null)
             return Result.failure(e);
-        if (speed < 1)
-            return Result.failure(GeneralErrors.valueMustBeGreaterOrEqual("speed", speed, 1));
+        if ((e = Guard.againstNullValueObject(speed,"speed")) != null)
+            return Result.failure(e);
         if (location == null)
             return Result.failure(GeneralErrors.valueIsRequired("location"));
 
@@ -55,14 +56,15 @@ public class Courier extends Aggregate<UUID> {
 
         if (places == null) return Result.failure(GeneralErrors.valueIsRequired("storage places"));
 
-        if (speed < 1)
-            return Result.failure(GeneralErrors.valueMustBeGreaterOrEqual("speed", speed, 1));
+        var speedResult = Speed.create(speed);
+        if (speedResult.isFailure())
+            return Result.failure(speedResult.getError());
 
         var locationResult = Location.create(x, y);
         if (locationResult.isFailure())
             return Result.failure(locationResult.getError());
 
-        Courier courier = new Courier(name,speed,locationResult.getValue(),places);
+        Courier courier = new Courier(name,speedResult.getValue(),locationResult.getValue(),places);
         courier.id = id;
 
         return Result.success(courier);
@@ -116,7 +118,7 @@ public class Courier extends Aggregate<UUID> {
     public double countStepsToLocation(Location targetLocation) {
         if (targetLocation != null) {
             int distance = currentLocation.distanceTo(targetLocation);
-            return (double) distance / speed;
+            return (double) distance / speed.getValue();
         }
         return 0;
     }
@@ -127,7 +129,7 @@ public class Courier extends Aggregate<UUID> {
 
         int difX = target.getX() - currentLocation.getX();
         int difY = target.getY() - currentLocation.getY();
-        int cruisingRange = speed;
+        int cruisingRange = speed.getValue();
 
         int moveX = Math.max(-cruisingRange, Math.min(cruisingRange, difX));
         cruisingRange -= Math.abs(moveX);

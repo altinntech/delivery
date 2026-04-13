@@ -1,5 +1,7 @@
 package libs.errs;
 
+import libs.ddd.ValueObject;
+
 import java.util.Collection;
 import java.util.UUID;
 
@@ -36,6 +38,13 @@ public final class Guard {
 
     public static Error againstNullOrEmpty(UUID uuid, String paramName) {
         if (uuid == null || uuid.equals(EMPTY_UUID)) {
+            return GeneralErrors.valueIsRequired(paramName);
+        }
+        return null;
+    }
+
+    public static <T extends ValueObject<T>> Error againstNullValueObject(ValueObject<T> valueObject, String paramName) {
+        if (valueObject == null) {
             return GeneralErrors.valueIsRequired(paramName);
         }
         return null;

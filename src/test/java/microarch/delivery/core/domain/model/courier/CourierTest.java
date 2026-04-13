@@ -3,6 +3,7 @@ package microarch.delivery.core.domain.model.courier;
 import libs.errs.Error;
 import libs.errs.UnitResult;
 import microarch.delivery.core.domain.model.general.Location;
+import microarch.delivery.core.domain.model.general.Speed;
 import microarch.delivery.core.domain.model.general.StoragePlace;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -21,15 +22,16 @@ public class CourierTest {
     public void shouldCreateNewCourier() {
 
         Location location = Location.create(5, 5).getValue();
+        Speed speed = Speed.create(5).getValue();
 
-        var courier = Courier.create("Bob", 5, location);
+        var courier = Courier.create("Bob", speed, location);
 
         assertThat(courier.isSuccess()).isTrue();
         assertThat(courier.getValue().getCurrentLocation()).isEqualTo(location);
         assertThat(courier.getValue().getStoragePlaces().size()).isEqualTo(1);
         assertThat(courier.getValue().getStoragePlaces().getFirst().getTotalVolume()).isEqualTo(10);
         assertThat(courier.getValue().getName()).isEqualTo("Bob");
-        assertThat(courier.getValue().getSpeed()).isEqualTo(5);
+        assertThat(courier.getValue().getSpeed()).isEqualTo(speed);
 
     }
 
@@ -39,13 +41,17 @@ public class CourierTest {
     public void shouldNotCreateOrderWithInvalidParams(String name, int speed, int x, int y) {
 
         Location targetLocation = null;
+        Speed speedValue = null;
 
         var location = Location.create(x, y);
 
         if (location.isSuccess())
             targetLocation = location.getValue();
 
-        var courier = Courier.create(name, speed, targetLocation);
+        var speedResult = Speed.create(speed);
+        if (speedResult.isSuccess()) speedValue = speedResult.getValue();
+
+        var courier = Courier.create(name, speedValue, targetLocation);
 
         assertThat(courier.isSuccess()).isFalse();
 
@@ -55,7 +61,7 @@ public class CourierTest {
     @DisplayName("Should add new storage place")
     public void shouldAddOneMoreStoragePlace() {
 
-        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
+        Courier courier = Courier.create("Bob", Speed.create(5).getValue(), Location.create(3, 7).getValue()).getValue();
         courier.addStoragePlace("Front", 5);
         courier.addStoragePlace("Back", 15);
 
@@ -69,7 +75,7 @@ public class CourierTest {
     @DisplayName("Check if courier could take new order")
     public void isCanTakeNewOrder() {
 
-        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
+        Courier courier = Courier.create("Bob", Speed.create(5).getValue(), Location.create(3, 7).getValue()).getValue();
 
         boolean canTakeNewOrder = courier.isAvailableForNewOrder(5) != null;
 
@@ -82,7 +88,7 @@ public class CourierTest {
     @DisplayName("Could not take the new order")
     public void couldNotTakeTheNewOrder() {
 
-        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
+        Courier courier = Courier.create("Bob", Speed.create(5).getValue(), Location.create(3, 7).getValue()).getValue();
         courier.addStoragePlace("Front", 5);
         courier.addStoragePlace("Back", 15);
 
@@ -101,7 +107,7 @@ public class CourierTest {
     @DisplayName("Take new order")
     public void shouldTakeTheNewOrder() {
 
-        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
+        Courier courier = Courier.create("Bob", Speed.create(5).getValue(), Location.create(3, 7).getValue()).getValue();
 
         UUID orderId = UUID.randomUUID();
         UnitResult<Error> e = courier.takeNewOrder(orderId, 5);
@@ -118,7 +124,7 @@ public class CourierTest {
     @DisplayName("Should finish order")
     public void shouldFinishOrder() {
 
-        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
+        Courier courier = Courier.create("Bob", Speed.create(5).getValue(), Location.create(3, 7).getValue()).getValue();
 
         UUID orderId = UUID.randomUUID();
 
@@ -137,7 +143,7 @@ public class CourierTest {
     @DisplayName("Should not finish order")
     public void shouldNotFinishOrder() {
 
-        Courier courier = Courier.create("Bob", 5, Location.create(3, 7).getValue()).getValue();
+        Courier courier = Courier.create("Bob", Speed.create(5).getValue(), Location.create(3, 7).getValue()).getValue();
 
         UUID orderId = UUID.randomUUID();
 

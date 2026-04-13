@@ -2,6 +2,7 @@ package microarch.delivery.adapters.out.postgres;
 
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.domain.model.general.Location;
+import microarch.delivery.core.domain.model.general.Speed;
 import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.order.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +32,7 @@ public class CourierIntegrationRepositoryTest extends PostgresIntegrationTestBas
     @DisplayName("Проверка на добавление курьера")
     void CanAddCourier () {
 
-        Courier courier = Courier.create("Bob",2,Location.create(3,8).getValue()).getValue();
+        Courier courier = Courier.create("Bob", Speed.create(2).getValue(),Location.create(3,8).getValue()).getValue();
         courier.addStoragePlace("TOP",5);
 
         boolean result = courierRepository.addCourier(courier);
@@ -51,7 +52,7 @@ public class CourierIntegrationRepositoryTest extends PostgresIntegrationTestBas
     @DisplayName("Проверка на изменение курьера")
     void CanUpdateCourier () {
 
-        Courier courier = Courier.create("BOB",5, Location.create(5,5).getValue()).getValue();
+        Courier courier = Courier.create("BOB",Speed.create(5).getValue(), Location.create(5,5).getValue()).getValue();
 
         boolean added = courierRepository.addCourier(courier);
 
@@ -80,11 +81,11 @@ public class CourierIntegrationRepositoryTest extends PostgresIntegrationTestBas
     @DisplayName("Проверка на поиск всех свободных курьеров")
     void CanFindAllFreeCouriers () {
 
-        Courier courier1 = Courier.create("Bob",5,Location.create(1,1).getValue()).getValue();
-        Courier courier2 = Courier.create("Tom",1,Location.create(7,3).getValue()).getValue();
-        Courier courier3 = Courier.create("Pete",2,Location.create(2,6).getValue()).getValue();
-        Courier courier4 = Courier.create("Jack",3,Location.create(8,8).getValue()).getValue();
-        Courier courier5 = Courier.create("Sarah",1,Location.create(9,1).getValue()).getValue();
+        Courier courier1 = Courier.create("Bob",Speed.create(5).getValue(),Location.create(1,1).getValue()).getValue();
+        Courier courier2 = Courier.create("Tom",Speed.create(1).getValue(),Location.create(7,3).getValue()).getValue();
+        Courier courier3 = Courier.create("Pete",Speed.create(2).getValue(),Location.create(2,6).getValue()).getValue();
+        Courier courier4 = Courier.create("Jack",Speed.create(3).getValue(),Location.create(8,8).getValue()).getValue();
+        Courier courier5 = Courier.create("Sarah",Speed.create(1).getValue(),Location.create(9,1).getValue()).getValue();
 
         courier1.takeNewOrder(UUID.randomUUID(),3);
         courier2.addStoragePlace("Top",10);

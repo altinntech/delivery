@@ -27,7 +27,7 @@ public class CourierPersistence  implements CourierRepository {
     public boolean addCourier(Courier c) {
         String sql = "INSERT INTO couriers (id,name,speed,current_l_x,current_l_y) VALUES (?, ?, ?, ?, ?)";
         // Returns the number of rows affected (usually 1)
-        int countRows = jdbcTemplate.update(sql, c.getId(), c.getName(),c.getSpeed(), c.getCurrentLocation().getX(), c.getCurrentLocation().getY());
+        int countRows = jdbcTemplate.update(sql, c.getId(), c.getName(),c.getSpeed().getValue(), c.getCurrentLocation().getX(), c.getCurrentLocation().getY());
         if (countRows == 0) return false;
         if (countRows == 1 && !c.getStoragePlaces().isEmpty()) {
             var inserted = insertStoragePlaces(c.getId(),c.getStoragePlaces());
@@ -92,7 +92,7 @@ public class CourierPersistence  implements CourierRepository {
 
       String sql = "UPDATE couriers SET name = ?,speed = ?,current_l_x = ?,current_l_y = ? WHERE id = ?";
       // Returns the number of rows affected (usually 1)
-      int countRows = jdbcTemplate.update(sql, c.getName(),c.getSpeed(), c.getCurrentLocation().getX(), c.getCurrentLocation().getY(),c.getId());
+      int countRows = jdbcTemplate.update(sql, c.getName(),c.getSpeed().getValue(), c.getCurrentLocation().getX(), c.getCurrentLocation().getY(),c.getId());
       if (countRows == 0) return false;
       //Delete all old storage places
       sql = "DELETE from couriers_storageplaces where courier_id = ?";
