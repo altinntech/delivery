@@ -6,12 +6,12 @@ import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.domain.model.general.Location;
 import microarch.delivery.core.domain.model.general.Speed;
 import microarch.delivery.core.ports.CourierRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import java.util.UUID;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
 
 public class CreateNewCourierUseCaseTest {
@@ -25,7 +25,7 @@ public class CreateNewCourierUseCaseTest {
 
         Speed speed = Speed.create(5).getValue();
         String courierName = "Bob";
-        UUID fixedUuid = new UUID(156215L,51652612L);//UUIDfromString("550e8400-e29b-41d4-a716-446655440000");
+        UUID fixedUuid = new UUID(156215L,51652612L);
         Location fixedLocation = Location.random().getValue();
 
         when(UUID.randomUUID()).thenReturn(fixedUuid);
@@ -41,6 +41,11 @@ public class CreateNewCourierUseCaseTest {
         verify(courierRepository).addCourier(newCourier);
 
 
+    }
+
+    @AfterEach
+    void tearDown() {
+        uuidMock.close(); // Mandatory cleanup
     }
 
 }

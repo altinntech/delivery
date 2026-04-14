@@ -1,7 +1,6 @@
 package microarch.delivery.core.application.usecases.courier_move_order;
 
 import libs.errs.Error;
-import libs.errs.GeneralErrors;
 import libs.errs.UnitResult;
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.domain.model.order.Order;
@@ -10,7 +9,6 @@ import microarch.delivery.core.ports.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

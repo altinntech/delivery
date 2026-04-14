@@ -3,6 +3,7 @@ package microarch.delivery.adapters.out.postgres;
 import microarch.delivery.core.domain.model.general.Location;
 import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.domain.model.order.OrderStatus;
+import microarch.delivery.core.ports.OrderRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class OrderRepositoryTest extends PostgresIntegrationTestBase {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private OrderPersistence orderRepository;
+    private OrderRepository orderRepository;
 
     @Test
     @DisplayName("Проверка успешного применения всех миграций")
