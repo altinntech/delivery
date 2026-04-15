@@ -7,6 +7,7 @@ import libs.errs.Error;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import microarch.delivery.core.domain.model.general.Address;
 
 import java.util.UUID;
 
@@ -15,33 +16,20 @@ import java.util.UUID;
 public final class CreateNewOrderCommand {
 
     private final UUID orderId;
-    private final String country;
-    private final String city;
-    private final String street;
-    private final String house;
-    private final String apartment;
+    private final Address address;
     private final int volume;
 
-    public static Result<CreateNewOrderCommand, Error> create(UUID basketId, String country, String city, String street,
-                                                              String house, String apartment,int volume) {
+    public static Result<CreateNewOrderCommand, Error> create(UUID basketId, Address address ,int volume) {
 
-        var err = Guard.againstNullOrEmpty(basketId, "basketId");
-        if (err != null)
-            return Result.failure(err);
-
-        err = Guard.combine(
-                Guard.againstNullOrEmpty(country,"country"),
-                Guard.againstNullOrEmpty(city,"city"),
-                Guard.againstNullOrEmpty(street,"street"),
-                Guard.againstNullOrEmpty(house,"house"),
-                Guard.againstNullOrEmpty(apartment,"apartment"),
+        var err = Guard.combine(
+                Guard.againstNullOrEmpty(basketId, "basketId"),
+                Guard.againstNullValueObject(address,"address"),
                 Guard.againstLessThan(volume,1,"volume")
         );
-
         if (err != null)
             return Result.failure(err);
 
-        return Result.success(new CreateNewOrderCommand(basketId, country,city,street,house,apartment,volume));
+        return Result.success(new CreateNewOrderCommand(basketId, address, volume));
     }
 
 

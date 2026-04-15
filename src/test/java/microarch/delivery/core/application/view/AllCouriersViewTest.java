@@ -1,14 +1,11 @@
 package microarch.delivery.core.application.view;
 
-import microarch.delivery.adapters.out.postgres.CourierQueries;
 import microarch.delivery.adapters.out.postgres.PostgresIntegrationTestBase;
-import microarch.delivery.core.application.usecases.assign_courier.AssignCourierCommand;
-import microarch.delivery.core.application.view.all_couriers.AllCouriersView;
-import microarch.delivery.core.application.view.all_couriers.GetAllCouriersQuery;
+import microarch.delivery.core.application.view.get_all_couriers.AllCouriersView;
+import microarch.delivery.core.application.view.get_all_couriers.GetAllCouriersQuery;
 import microarch.delivery.core.domain.model.courier.Courier;
 import microarch.delivery.core.domain.model.general.Location;
 import microarch.delivery.core.domain.model.general.Speed;
-import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.ports.CourierRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,11 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)

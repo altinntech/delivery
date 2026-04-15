@@ -1,4 +1,4 @@
-package microarch.delivery.core.application.view.uncompleted_orders;
+package microarch.delivery.core.application.view.get_uncompleted_orders;
 
 import libs.errs.Error;
 import libs.errs.Result;

@@ -1,10 +1,7 @@
 package microarch.delivery.adapters.out.postgres;
 
-import microarch.delivery.core.application.view.all_couriers.GetAllCouriersResponse;
 import microarch.delivery.core.application.view.dto.CourierDto;
 import microarch.delivery.core.application.view.dto.LocationDto;
-import microarch.delivery.core.domain.model.courier.Courier;
-import microarch.delivery.core.domain.model.order.OrderStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 

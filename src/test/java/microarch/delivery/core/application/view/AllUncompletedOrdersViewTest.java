@@ -1,15 +1,10 @@
 package microarch.delivery.core.application.view;
 
 import microarch.delivery.adapters.out.postgres.PostgresIntegrationTestBase;
-import microarch.delivery.core.application.view.all_couriers.AllCouriersView;
-import microarch.delivery.core.application.view.all_couriers.GetAllCouriersQuery;
-import microarch.delivery.core.application.view.uncompleted_orders.GetUncompletedOrdersQuery;
-import microarch.delivery.core.application.view.uncompleted_orders.UncompletedOrdersView;
-import microarch.delivery.core.domain.model.courier.Courier;
+import microarch.delivery.core.application.view.get_uncompleted_orders.GetUncompletedOrdersQuery;
+import microarch.delivery.core.application.view.get_uncompleted_orders.UncompletedOrdersView;
 import microarch.delivery.core.domain.model.general.Location;
-import microarch.delivery.core.domain.model.general.Speed;
 import microarch.delivery.core.domain.model.order.Order;
-import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.OrderRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
