@@ -6,7 +6,6 @@ import libs.errs.Error;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import microarch.basket.adapters.in.http.model.Basket;
 import microarch.delivery.core.domain.model.general.Location;
 
 import java.util.UUID;
