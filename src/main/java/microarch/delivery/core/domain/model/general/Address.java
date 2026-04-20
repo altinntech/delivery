@@ -4,6 +4,7 @@ import libs.ddd.ValueObject;
 import libs.errs.Guard;
 import libs.errs.Result;
 import libs.errs.Error;
+import libs.util.RandomHelper;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,6 +38,14 @@ public class Address extends ValueObject<Address> {
             return Result.failure(err);
 
         return Result.success(new Address(country,city,street,house,apartment));
+    }
+
+    public static Result<Address,Error> random () {
+        return create(RandomHelper.generateRandomString(5),
+                RandomHelper.generateRandomString(5),
+                RandomHelper.generateRandomString(5),
+                RandomHelper.generateRandomString(5),
+                RandomHelper.generateRandomString(5));
     }
 
     @Override
