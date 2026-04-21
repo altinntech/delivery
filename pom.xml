@@ -233,6 +233,11 @@
             <version>11.7.2</version> <!-- Use a version matching your flyway-core -->
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
