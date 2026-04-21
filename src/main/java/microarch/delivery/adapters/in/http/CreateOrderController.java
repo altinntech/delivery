@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Random;
 import java.util.UUID;
 
 @RestController
@@ -29,6 +28,6 @@ public class CreateOrderController implements CreateOrderApi {
         var handleCommandResult = this.createNewOrderUseCase.handle(createCommandResult.getValue());
         if (handleCommandResult.isFailure()) return ResponseEntity.status(HttpStatus.CONFLICT).build();
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new CreateOrderResponse().orderId(createCommandResult.getValue().getOrderId()));
     }
 }
