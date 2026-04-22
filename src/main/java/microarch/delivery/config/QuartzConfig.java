@@ -23,7 +23,7 @@ public class QuartzConfig {
                 .forJob(assignOrdersJobDetail)
                 .withIdentity("assignOrdersTrigger")
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(2)   // каждые 2 сек
+                        .withIntervalInSeconds(20)   // каждые 2 сек
                         .repeatForever())
                 .build();
     }
@@ -42,7 +42,7 @@ public class QuartzConfig {
                 .forJob(moveCouriersJobDetail)
                 .withIdentity("moveCouriersTrigger")
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInSeconds(2)   // каждые 2 сек
+                        .withIntervalInSeconds(20)   // каждые 2 сек
                         .repeatForever())
                 .build();
     }
