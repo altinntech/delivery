@@ -1,8 +1,11 @@
 package microarch.delivery.core.application.usecases.courier_move_order;
 
+import libs.ddd.Aggregate;
+import libs.ddd.DomainEventPublisher;
 import libs.errs.Error;
 import libs.errs.UnitResult;
 import microarch.delivery.core.domain.model.courier.Courier;
+import microarch.delivery.core.domain.model.general.Location;
 import microarch.delivery.core.domain.model.order.Order;
 import microarch.delivery.core.ports.CourierRepository;
 import microarch.delivery.core.ports.OrderRepository;
@@ -18,17 +21,20 @@ public class CourierMoveUseCase implements CourierMoveOrder{
 
     private final OrderRepository orderRepository;
     private final CourierRepository courierRepository;
+    private final DomainEventPublisher domainEventPublisher;
 
-    public CourierMoveUseCase(OrderRepository orderRepository, CourierRepository courierRepository) {
+    public CourierMoveUseCase(OrderRepository orderRepository, CourierRepository courierRepository, DomainEventPublisher domainEventPublisher) {
         this.orderRepository = orderRepository;
         this.courierRepository = courierRepository;
+        this.domainEventPublisher = domainEventPublisher;
     }
 
     @Transactional
     @Override
     public UnitResult<Error> handle(CourierMoveCommand command) {
 
-        List<Order> assignedOrders = orderRepository.findAllAssigned();
+        var assignedOrders = orderRepository.findAllAssigned();
+
         if (assignedOrders == null || assignedOrders.isEmpty())
             return UnitResult.failure(Errors.noAssignedOrders());
 
@@ -43,10 +49,14 @@ public class CourierMoveUseCase implements CourierMoveOrder{
                     if (!courier.finishOrder(o.getId()).isSuccess())
                         return UnitResult.failure(Errors.courierCouldNotExtractOrder(courier.getId(),o.getId()));
                 }
-                if (!courierRepository.updateCourier(courier)) UnitResult.failure(Errors.courierPersistenceError(courier.getId()));
-                if (!orderRepository.updateOrder(o)) UnitResult.failure(Errors.orderPersistenceError(o.getId()));
+                if (!courierRepository.updateCourier(courier))
+                    return UnitResult.failure(Errors.courierPersistenceError(courier.getId()));
+                if (!orderRepository.updateOrder(o))
+                    return UnitResult.failure(Errors.orderPersistenceError(o.getId()));
             }
         }
+
+        domainEventPublisher.publish(assignedOrders);
 
         return UnitResult.success();
     }

@@ -1,5 +1,6 @@
 package microarch.delivery.core.application.usecases.assign_courier;
 
+import libs.ddd.DomainEventPublisher;
 import libs.errs.Error;
 import libs.errs.Result;
 import microarch.delivery.core.domain.model.courier.Courier;
@@ -18,13 +19,16 @@ public class AssignCourierUseCase implements AssignCourier{
     private final OrderRepository orderRepository;
     private final CourierRepository courierRepository;
     private final OrderDispatchingService orderDispatchingService;
+    private final DomainEventPublisher domainEventPublisher;
 
     public AssignCourierUseCase(OrderRepository orderRepository,
                                 CourierRepository courierRepository,
-                                OrderDispatchingService orderDispatchingService) {
+                                OrderDispatchingService orderDispatchingService,
+                                DomainEventPublisher domainEventPublisher   ) {
         this.orderRepository = orderRepository;
         this.courierRepository = courierRepository;
         this.orderDispatchingService = orderDispatchingService;
+        this.domainEventPublisher = domainEventPublisher;
     }
 
     @Transactional
@@ -43,6 +47,8 @@ public class AssignCourierUseCase implements AssignCourier{
         if (!courierRepository.updateCourier(courierResult.getValue()) ||
                 !orderRepository.updateOrder(newOrder.get()))
             return Result.failure(Errors.updateCouriersOrdersFailed());
+
+        domainEventPublisher.publish(List.of(newOrder.get()));
 
         return Result.success(courierResult.getValue().getId());
     }
